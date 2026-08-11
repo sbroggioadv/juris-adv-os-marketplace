@@ -1,5 +1,21 @@
 # Juris Adv-OS — Marketplace
 
+> ## ⚖️ Este repositório NÃO é software livre
+>
+> O código fica visível para viabilizar a instalação no Claude/Cowork — não porque seja gratuito.
+>
+> **JURIS ADV-OS — R$ 29,80, pagamento único** (sem assinatura, sem recorrência)
+> 👉 **[Adquirir a licença](https://pay.kirvano.com/bf79f472-0a7a-41ba-b54c-b271a5f7cbeb)**
+>
+> **Ao forkar ou clonar este repositório você adere à [licença de uso](LICENSE)**, devendo efetuar o
+> pagamento no link acima e enviar o comprovante para **luis@sbroggio.com.br**.
+>
+> Os forks são públicos no GitHub e são registrados pelo titular (data, conta e repositório).
+>
+> **Já comprou?** Nada a fazer — sua licença cobre o uso e o fork para instalação. Este aviso vale de
+> 11/08/2026 em diante, para quem chega ao repositório sem ter adquirido.
+
+
 Marketplace oficial do plugin **Juris-Adv-OS** para Claude Code / Cowork.
 
 > Buscador e validador de jurisprudencia, com auditoria de nexo causal
@@ -11,7 +27,7 @@ Marketplace oficial do plugin **Juris-Adv-OS** para Claude Code / Cowork.
 
 - `.claude-plugin/marketplace.json` — manifesto do marketplace
 - `juris-adv-os/` — codigo-fonte completo do plugin
-- `LICENSE` — MIT
+- `LICENSE` — licenca de uso proprietaria
 
 ---
 
@@ -68,7 +84,7 @@ e responsabilidade exclusiva do advogado antes de protocolar.
 
 ## Licenca
 
-MIT — ver [LICENSE](./LICENSE).
+Uso licenciado mediante aquisição — ver [`LICENSE`](./LICENSE). As cópias obtidas até 11/08/2026 permanecem sob MIT; a partir dessa data o código é proprietário.
 
 ---
 
