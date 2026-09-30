@@ -23,7 +23,7 @@ Use `Skill(skill="buscar-jurisprudencia")` passando a tese capturada.
 
 A skill ira:
 - Buscar em portais oficiais (STF, STJ, TST, TRFs, TJs) primeiro
-- Complementar com agregadores se necessario (JusBrasil, Escavador)
+- Declarar resultado magro quando os oficiais derem pouco — nunca completar com agregador comercial
 - Retornar lista estruturada (max 10) com URLs e classificacao da fonte
 - **AUTO-DISPARAR** a skill `validar-jurisprudencia` ao final
 

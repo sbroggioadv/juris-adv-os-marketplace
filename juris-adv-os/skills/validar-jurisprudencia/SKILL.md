@@ -52,19 +52,26 @@ Capture:
 | Status | Quando emitir |
 |--------|---------------|
 | ✅ **VALIDADA** | Fetch retornou 200 + numero do processo presente + trecho de ementa presente (literal ou ~95%) + metadados batem. |
-| ⚠️ **PARCIAL** | Fetch retornou 200 mas: numero presente porem ementa parafraseada / metadados divergem em 1 campo / pagina e de agregador (JusBrasil/Escavador). |
+| ⚠️ **PARCIAL** | Fetch retornou 200 mas: numero presente porem ementa parafraseada / metadados divergem em 1 campo / pagina traz apenas ementa, sem inteiro teor. |
 | 🔴 **NAO VALIDADA** | Fetch falhou (404/403/timeout/etc) OU numero do processo nao aparece na pagina OU trecho de ementa nao aparece. |
 
 **Regra de bloqueio:** **NUNCA** emita ✅ se algum dos 3 itens (a/b/c) falhar. Em duvida, rebaixa pra ⚠️.
 
-### Passo 4 — Caso especial: agregador com link pro tribunal
+### Passo 4 — Caso especial: citacao trazida pelo usuario, de origem nao-oficial
 
-Se a fonte original era AGREGADOR (JusBrasil/Escavador) e o agregador
-tem link "Ver no [tribunal]" ou link pra inteiro teor oficial:
-1. Faca um segundo WebFetch nesse link oficial.
+Este produto **nao busca** em agregadores comerciais — os termos de uso deles vedam acesso
+automatizado. Mas o usuario pode chegar com uma citacao que ele mesmo encontrou em qualquer
+lugar, e conferi-la contra a fonte oficial e exatamente o servico desta skill. Isso nao e
+acesso automatizado a plataforma nenhuma: e verificar uma alegacao humana contra o tribunal.
+
+Quando o usuario fornecer a citacao (numero do processo, tribunal, trecho):
+1. Faca o WebFetch **na fonte oficial do tribunal**, nunca no site onde ele achou.
 2. Se confirmar a citacao na fonte oficial, emita ✅ + observacao
-   `confirmado tambem na fonte oficial: <URL>`.
-3. Se nao confirmar, emita ⚠️ `agregador divergente do oficial`.
+   `confirmado na fonte oficial: <URL>`.
+3. Se a fonte oficial nao confirmar, emita 🔴 `nao confirmado na fonte oficial` — e diga que a
+   citacao pode estar incorreta na origem de onde o usuario a tirou.
+4. Se nao conseguir alcancar a fonte oficial, emita ⚠️ `nao verificado` com o motivo. **Nunca**
+   emita ✅ apoiado apenas no que o usuario trouxe.
 
 ### Passo 5 — Saida estruturada
 

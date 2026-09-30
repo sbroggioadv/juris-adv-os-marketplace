@@ -2,9 +2,9 @@
 name: buscar-jurisprudencia
 description: >
   BUSCAR-JURISPRUDENCIA — Pesquisa jurisprudencia em portais oficiais (STF,
-  STJ, TST, TRFs, TRTs, TJs) e agregadores (JusBrasil, Escavador) usando
-  WebSearch + WebFetch nativos. Retorna cada citacao com URL da fonte e
-  classificacao da origem (oficial vs agregador). Ao final, AUTO-INVOCA a
+  STJ, TST, TRFs, TRTs, TJs) usando WebSearch + WebFetch nativos. Nao usa
+  agregadores comerciais. Retorna cada citacao com URL da fonte e
+  classificacao da origem (inteiro teor vs ementa). Ao final, AUTO-INVOCA a
   skill validar-jurisprudencia para confirmar cada link. Use quando o
   usuario pedir "buscar jurisprudencia", "preciso de precedente sobre X",
   "tem julgado de Y", "pesquisar acordao", "encontrar sumula", "ver decisao
@@ -17,7 +17,8 @@ description: >
 
 **Nao invente julgado.** Toda jurisprudencia retornada DEVE ter:
 - URL real da fonte (obtida via WebSearch ou conhecida do tribunal)
-- Classificacao da fonte: `OFICIAL` (jurisprudencia.X.jus.br) ou `AGREGADOR` (JusBrasil/Escavador)
+- Classificacao da fonte: `OFICIAL — INTEIRO TEOR` (pagina do tribunal com o acordao completo) ou
+  `OFICIAL — EMENTA` (pagina do tribunal com ementa apenas). Fonte nao-oficial nao entra.
 - Trecho da ementa transcrito (nao parafrase a primeira vez)
 
 Se WebSearch retornar zero resultados confiaveis, voce DEVE dizer ao usuario:
@@ -41,26 +42,51 @@ Se faltar info critica, pergunte UMA vez. Nao mais que isso.
 
 ### Passo 2 — Priorizar fontes oficiais
 
-Sempre **primeiro** as fontes oficiais (mais confiaveis, sem anti-bot):
+Sempre **primeiro** as fontes oficiais (mais confiaveis — mas leia a nota de anti-bot abaixo):
 
 | Tribunal | URL base de busca |
 |----------|-------------------|
 | STF | `https://jurisprudencia.stf.jus.br/pages/search` |
 | STJ | `https://scon.stj.jus.br/SCON/pesquisar.jsp` |
 | TST | `https://jurisprudencia.tst.jus.br/` |
-| TRF1 | `https://jurisprudencia.trf1.jus.br/` |
+| TST sumulas/OJs | `https://www.tst.jus.br/sumulas` |
+| TRF1 | `https://jurisprudencia.cjf.jus.br/trf1` |
 | TRF2 | `https://www10.trf2.jus.br/consultas/?entqr=3&ie=UTF-8` |
-| TRF3 | `https://web.trf3.jus.br/base-textual` |
+| TRF3 | `https://web.trf3.jus.br/jurisprudencia` |
 | TRF4 | `https://jurisprudencia.trf4.jus.br/pesquisa/pesquisa.php` |
-| TRF5 | `https://julia-pesquisa.trf5.jus.br/julia-pesquisa/` |
-| TRF6 | `https://jurisprudencia.trf6.jus.br/` |
+| TRF5 | `https://juliapesquisa.trf5.jus.br/julia-pesquisa` |
+| TRF6 | `https://eproc-jur.trf6.jus.br/` |
 | TJSP | `https://esaj.tjsp.jus.br/cjsg/consultaCompleta.do` |
-| TJRJ | `https://www3.tjrj.jus.br/ejud/ConsultaJurisprudencia.aspx` |
+| TJRJ | `https://www3.tjrj.jus.br/ejuris/ConsultarJurisprudencia.aspx` |
 | TJMG | `https://www5.tjmg.jus.br/jurisprudencia/` |
 | TJRS | `https://www.tjrs.jus.br/buscas/jurisprudencia/` |
-| TST sumulas/OJs | `https://www3.tst.jus.br/jurisprudencia/Sumulas_com_indice/` |
+| Justica Federal unificada (STF · STJ · TNU · TRF1-6) | `https://jurisprudencia.cjf.jus.br/unificada` |
 
 (Lista nao exaustiva — consulte outros tribunais conforme estado.)
+
+URLs verificadas em 30/09/2026 com `curl -sL -o /dev/null -m 15 -w '%{http_code}'`.
+Enderecos mortos foram substituidos pelo endereco oficial vivo do proprio tribunal ou do CJF.
+Nas rotas do CJF a barra final importa: `/trf1` responde 200, `/trf1/` responde 404 — use sem
+barra. Revalide antes de citar se passar muito tempo: tribunal troca de host sem aviso.
+
+**Anti-bot em fonte oficial — medido, nao suposto.** Nem toda fonte oficial aceita fetch
+automatico. Medido em 30/09/2026: STF devolve `202` com header `x-amzn-waf-action: challenge`;
+STJ devolve `403` com `cf-mitigated: challenge`; o CJF carrega reCAPTCHA; o TRF3
+(`https://web.trf3.jus.br/jurisprudencia`) devolveu `000` no curl local em 30/09/2026 (stream
+HTTP/2, exit 92), mas a pagina oficial abre por navegador/WebFetch — mesma conduta do STF/STJ.
+O endereco e o oficial correto, mas o fetch automatizado pode falhar. Nesse caso:
+- use WebSearch restrito ao dominio oficial (`site:scon.stj.jus.br`) para achar o julgado;
+- declare na citacao que a confirmacao por fetch nao foi possivel (desafio anti-bot);
+- **nunca** leia `202`/`403` como "pagina encontrada" e nunca complete por agregador.
+
+**Fonte que nao responde.** Se a URL oficial de um tribunal nao responder (`000`, timeout ou
+`404`), tente primeiro a busca unificada do CJF para aquele tribunal. Se tambem falhar, marque
+no relatorio, literalmente:
+
+> `fonte oficial indisponivel nesta verificacao — [tribunal] — [codigo HTTP medido]`
+
+e siga com os tribunais que responderam. Nao invente endereco novo nem troque por agregador
+para tapar o buraco.
 
 ### Passo 3 — Buscar via WebSearch
 
@@ -78,13 +104,20 @@ WebSearch: "fraude eletronica" "consumidor" julgado STJ 2024
 
 **Limite: 6 buscas no maximo por tese.** Se nao achou, e porque o tema e novo ou nao consolidado — informe ao usuario, nao force.
 
-### Passo 4 — Buscar em agregadores APENAS como complemento
+### Passo 4 — Quando as fontes oficiais derem pouco resultado
 
-Se as fontes oficiais derem pouco resultado, complemente com:
-- **JusBrasil** (`site:jusbrasil.com.br`)
-- **Escavador** (`site:escavador.com`)
+**NAO recorra a agregadores comerciais.** JusBrasil e Escavador vedam expressamente acesso
+automatizado nos termos de uso (robos, spiders, crawlers, scrapers), salvo permissao escrita.
+Buscar neles por este produto e violacao contratual, independente de marcar a origem.
 
-**MARQUE SEMPRE** essas citacoes como `AGREGADOR — conferir no tribunal`.
+Se as fontes oficiais derem pouco resultado, o comportamento correto e **declarar o resultado
+magro**, nunca preenche-lo por outra via:
+- diga em quais tribunais buscou e com quais termos;
+- diga quantos resultados vieram;
+- sugira variacao de termo, de periodo ou de tribunal, e pergunte se deve tentar.
+
+Resultado pequeno e um fato sobre a busca. Completar com fonte proibida transforma um fato
+verificavel em risco contratual.
 
 ### Passo 5 — Estruturar cada citacao
 
@@ -99,7 +132,8 @@ Para cada julgado encontrado, monte:
 - **Data de julgamento:** [DD/MM/YYYY]
 - **Publicacao:** [DJe / data]
 - **Fonte:** [URL completa]
-- **Origem:** OFICIAL | AGREGADOR
+- **Origem:** OFICIAL — INTEIRO TEOR | OFICIAL — EMENTA | VINCULANTE
+- **Confirmacao por fetch:** OK [codigo HTTP] | FALHOU — [desafio anti-bot / fonte indisponivel]
 - **Ementa (trecho relevante):**
   > [transcricao literal de 3-8 linhas, sem parafrase]
 - **Tese central:** [1 frase que sintetiza o entendimento — sua sintese]
@@ -148,7 +182,8 @@ Se o usuario pedir explicitamente "traz o inteiro teor de X", faca WebFetch dire
 
 **Busca realizada em:** [DD/MM/YYYY HH:MM]
 **Tribunais consultados:** [lista]
-**Total de citacoes:** [N] · oficiais: [N] · agregadores: [N]
+**Total de citacoes:** [N] · todas oficiais · confirmadas por fetch: [N]
+**Fontes oficiais indisponiveis nesta verificacao:** [tribunal — codigo HTTP] ou [nenhuma]
 
 ---
 
@@ -170,4 +205,6 @@ antes de citar em peca.
 3. **NAO atribuir a tribunal errado.** Em duvida, marca `⚠️ origem incerta`.
 4. **NAO afirmar "validada" sem ter chamado a skill `validar-jurisprudencia`.**
 5. **NAO retornar mais de 10 citacoes.** Foco em qualidade, nao quantidade.
-6. **NAO usar so JusBrasil/Escavador.** Sempre tenta tribunais oficiais primeiro.
+6. **NAO buscar em JusBrasil nem Escavador.** Os termos de uso dos dois vedam acesso
+   automatizado; marcar a origem como `AGREGADOR` nao sana a vedacao. Fonte oficial ou
+   resultado declarado como magro — nao ha terceira via.
