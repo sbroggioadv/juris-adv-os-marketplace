@@ -1,14 +1,16 @@
 {
-  "SessionStart": [
-    {
-      "matcher": "",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "echo '[juris-adv-os] Plugin de busca + validacao de jurisprudencia ativo. Comando: /juris <tese>. Skills disponiveis: buscar-jurisprudencia, validar-jurisprudencia, auditoria-pre-envio, formatar-citacao.'",
-          "timeout": 5
-        }
-      ]
-    }
-  ]
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '[juris-adv-os] Plugin de busca + validacao de jurisprudencia ativo. Comando: /juris <tese>. Skills disponiveis: buscar-jurisprudencia, validar-jurisprudencia, auditoria-pre-envio, formatar-citacao.'",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
 }
