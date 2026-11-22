@@ -9,7 +9,7 @@
     {
       "name": "juris-adv-os",
       "source": "./juris-adv-os",
-      "description": "Plugin focado em pesquisa, validacao e auditoria de jurisprudencia. 4 skills: buscar-jurisprudencia (portais oficiais STF, STJ, TST, TRFs, TJs + agregadores JusBrasil/Escavador), validar-jurisprudencia (WebFetch real em cada URL com status ✅/⚠️/🔴), auditoria-pre-envio (checagem 3D de inteiro teor + link + nexo a tese do usuario antes da citacao), formatar-citacao (ABNT NBR 6023/10520 + bloco pronto-pra-peca). Comando /juris dispara a cadeia. Sem orquestrador, sem onboarding: instalou, rodou, funcionou.",
+      "description": "Plugin focado em pesquisa, validacao e auditoria de jurisprudencia. 4 skills: buscar-jurisprudencia (portais oficiais STF, STJ, TST, TRFs, TJs; sem agregadores comerciais), validar-jurisprudencia (WebFetch real em cada URL com status ✅/⚠️/🔴), auditoria-pre-envio (checagem 3D de inteiro teor + link + nexo a tese do usuario antes da citacao), formatar-citacao (ABNT NBR 6023/10520 + bloco pronto-pra-peca). Comando /juris dispara a cadeia. Sem orquestrador, sem onboarding: instalou, rodou, funcionou.",
       "author": {
         "name": "Sbroggio Advocacia & IA Combativa"
       }

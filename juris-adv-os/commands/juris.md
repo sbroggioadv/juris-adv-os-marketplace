@@ -1,5 +1,5 @@
 ---
-description: Busca jurisprudencia em portais oficiais e agregadores, valida automaticamente cada link via fetch, e audita o nexo com a tese do usuario antes de citar. Anti-halucinacao por design.
+description: Busca jurisprudencia so em portais oficiais, valida automaticamente cada link via fetch, e audita o nexo com a tese do usuario antes de citar. Anti-halucinacao por design.
 allowed-tools: Read, WebFetch, WebSearch, Bash, Glob, Grep
 argument-hint: [tese ou tema da busca]
 ---
@@ -22,7 +22,7 @@ Argumento recebido: `$ARGUMENTS`
 Use `Skill(skill="buscar-jurisprudencia")` passando a tese capturada.
 
 A skill ira:
-- Buscar em portais oficiais (STF, STJ, TST, TRFs, TJs) primeiro
+- Buscar so em portais oficiais (STF, STJ, TST, TRFs, TJs)
 - Declarar resultado magro quando os oficiais derem pouco — nunca completar com agregador comercial
 - Retornar lista estruturada (max 10) com URLs e classificacao da fonte
 - **AUTO-DISPARAR** a skill `validar-jurisprudencia` ao final

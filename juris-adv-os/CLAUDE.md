@@ -35,7 +35,7 @@ link conferido por fetch.
 
 | Skill | Funcao | Auto-chain? |
 |-------|--------|-------------|
-| `buscar-jurisprudencia` | Busca em portais oficiais + agregadores | dispara `validar` ao final |
+| `buscar-jurisprudencia` | Busca so em portais oficiais | dispara `validar` ao final |
 | `validar-jurisprudencia` | WebFetch real em cada URL, status ✅/⚠️/🔴 | auto-disparada |
 | `auditoria-pre-envio` | 3D: inteiro teor + link + nexo a tese | manual (pede contexto da peca) |
 | `formatar-citacao` | ABNT + bloco-pra-peca | manual |

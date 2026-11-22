@@ -54,7 +54,7 @@ claude plugin install juris-adv-os@juris-adv-os-marketplace
 
 - **`/juris <tese>`** — dispara a cadeia completa: busca -> validacao -> oferta de auditoria -> oferta de formatacao
 - **4 skills:**
-  - `buscar-jurisprudencia` — portais oficiais (STF, STJ, TST, TRFs, TJs) + agregadores
+  - `buscar-jurisprudencia` — portais oficiais (STF, STJ, TST, TRFs, TJs), sem agregadores comerciais
   - `validar-jurisprudencia` — WebFetch real em cada URL, status ✅/⚠️/🔴
   - `auditoria-pre-envio` — checa nexo entre cada jurisprudencia e a tese do usuario
   - `formatar-citacao` — ABNT (NBR 6023/10520) + bloco pronto-pra-peca

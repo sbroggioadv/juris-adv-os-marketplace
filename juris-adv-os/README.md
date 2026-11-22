@@ -10,8 +10,8 @@ jurisprudencia** com rastreabilidade real.
 
 ## O que faz
 
-- 🔎 **Busca** jurisprudencia em portais oficiais (STF, STJ, TST, TRFs,
-  TJs) e agregadores (JusBrasil, Escavador), priorizando fontes oficiais.
+- 🔎 **Busca** jurisprudencia exclusivamente em portais oficiais (STF, STJ,
+  TST, TRFs, TJs). Nao usa agregadores comerciais.
 - ✅ **Valida** automaticamente cada citacao via `WebFetch` na URL
   declarada — confirma se o numero do processo e o trecho da ementa
   efetivamente aparecem na pagina. Status por citacao:
@@ -33,7 +33,7 @@ Apos instalar:
 ```
 
 O Claude vai:
-1. Buscar em STJ, TJs, agregadores
+1. Buscar nos portais oficiais (STF, STJ, TST, TRFs, TJs)
 2. Validar cada link automaticamente
 3. Oferecer auditoria pre-envio (nexo a sua tese)
 4. Formatar as aprovadas em ABNT + bloco pra peca
@@ -64,7 +64,7 @@ claude plugin install juris-adv-os@juris-adv-os-marketplace
 
 | Skill | Funcao |
 |-------|--------|
-| `buscar-jurisprudencia` | Busca em portais oficiais + agregadores |
+| `buscar-jurisprudencia` | Busca so em portais oficiais |
 | `validar-jurisprudencia` | WebFetch real em cada URL declarada |
 | `auditoria-pre-envio` | Checa nexo entre jurisprudencia e tese do usuario |
 | `formatar-citacao` | ABNT + bloco pronto-pra-peca |
@@ -92,7 +92,7 @@ e responsabilidade exclusiva do advogado antes de protocolar.
 
 ## Licenca
 
-MIT — ver [LICENSE](./LICENSE).
+Uso licenciado mediante aquisição — ver [`LICENSE`](./LICENSE). As cópias obtidas até 11/08/2026 permanecem sob MIT; a partir dessa data o código é proprietário.
 
 ---
 
